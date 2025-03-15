@@ -1,0 +1,11 @@
+export {default as DashboardPage} from './Dashboard.page';
+export {default as StockPage} from './Stock.page';
+export {default as CategoryPage} from './Category.page';
+export {default as InvoicesPage} from './Invoices.page';
+export {default as ProfilePage} from './Profile.page';
+export {default as StockDetailPage} from './StockDetail.page'
+export {default as LoginPage} from './Auth/Login.page'
+export {default as RegisterPage} from './Auth/Register.page'
+export {default as OrderHistoryPage} from './OrderHistory.page'
+export {default as OrderCurrentPage} from './OrderCurrent.page'
+export {default as CartPage} from './Cart.page'
