@@ -8,6 +8,7 @@ export const ContextProvider = ({ children }) => {
   const [registerCheck, setRegister] = useState(false);
   const [logoutCheck, setLogout] = useState(false);
   const [editSuccess, setEditSuccess] = useState(false);
+  
 
   const [cart, setCart] = useState([]);
 
@@ -21,7 +22,6 @@ export const ContextProvider = ({ children }) => {
   }, [cart]);
 
   const addToCart = (item, updateCheck = false) => {
-    console.log(item);
     setCart((prevCart) => {
       const existingItem = prevCart.find((cartItem) => cartItem.id === item.id);
 

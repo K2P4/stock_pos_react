@@ -15,12 +15,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Swal from "sweetalert2";
 
-import EditFormComponent from "./EditForm.componet";
+import EditFormComponent from "../FormComponent/EditForm.componet";
 import {
   useDeleteCategoryMutation,
   useDetailCategoryQuery,
   useGetCategoryQuery,
-} from "../store/services/endpoints/category.endpoint";
+} from "../../store/services/endpoints/category.endpoint";
 
 const CategoryTableComponent = ({
   categories,

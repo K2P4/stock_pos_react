@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   useGetStocksQuery,
   useUpdateStockMutation,
-} from "../store/services/endpoints/stock.endpoint";
+} from "../../store/services/endpoints/stock.endpoint";
 import {
   DialogTitle,
   DialogContent,
@@ -18,8 +18,8 @@ import {
 import {
   useGetCategoryQuery,
   useUpdateCategoryMutation,
-} from "../store/services/endpoints/category.endpoint";
-import { AllContext } from "../context/AllContext";
+} from "../../store/services/endpoints/category.endpoint";
+import { AllContext } from "../../context/AllContext";
 
 const EditFormComponent = ({
   handleClose,
@@ -357,7 +357,7 @@ const EditFormComponent = ({
           {/* Category */}
           {!checkCategory && (
             <FormControl className="" fullWidth>
-              <InputLabel id="category-label">Category</InputLabel>
+              <label  id="category-label">Category</label>
               <Select
                 sx={{ borderRadius: "15px" }}
                 labelId="category-label"

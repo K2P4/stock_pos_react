@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from "react";
-import { useCreateStockMutation } from "../store/services/endpoints/stock.endpoint";
+import { useCreateStockMutation } from "../../store/services/endpoints/stock.endpoint";
 import {
   DialogTitle,
   DialogContent,
@@ -15,8 +15,8 @@ import {
 import {
   useCreateCategoryMutation,
   useGetCategoryQuery,
-} from "../store/services/endpoints/category.endpoint";
-import { AllContext } from "../context/AllContext";
+} from "../../store/services/endpoints/category.endpoint";
+import { AllContext } from "../../context/AllContext";
 
 const CreateFormComponent = ({ handleClose, checkCategory = false }) => {
   const [uploadStock] = useCreateStockMutation();
@@ -43,6 +43,16 @@ const CreateFormComponent = ({ handleClose, checkCategory = false }) => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
+
+
+    if(name == "discountPercentage"){
+      const numberValue = Number(value);
+
+      if(numberValue > 99){
+        alert('Discount Percentage Must Be Shorter Than 99 %')
+      }
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -247,7 +257,7 @@ const CreateFormComponent = ({ handleClose, checkCategory = false }) => {
                   <p>Discount Percentage</p>
                   <input
                     className="border p-2 mt-1 focus:outline-none w-full rounded-xl"
-                    type="text"
+                    type="number"
                     name="discountPercentage"
                     placeholder="0"
                     value={formData.discountPercentage}
@@ -292,7 +302,7 @@ const CreateFormComponent = ({ handleClose, checkCategory = false }) => {
           {/* Category */}
           {!checkCategory && (
             <FormControl className=" scroll-auto " fullWidth>
-              <InputLabel id="category-label">Category</InputLabel>
+              <label id="category-label">Category</label>
               <Select
                 className=" scroll-auto "
                 sx={{ borderRadius: "15px" }}

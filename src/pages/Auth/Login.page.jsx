@@ -7,7 +7,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useLogInMutation } from "../../store/services/endpoints/auth.endpoint";
 import { Button } from "../../Components";
 import { AllContext } from "../../context/AllContext";
-import FormDataComponent from "../../Components/FormData.component";
+import FormDataComponent from "../../Components/FormComponent/FormData.component";
 
 const LoginPage = () => {
   const [loginFun, data] = useLogInMutation();
@@ -56,14 +56,26 @@ const LoginPage = () => {
   });
 
   const handleSubmit = async (value) => {
-    const response = await loginFun(value);
+    try {
+      const response = await loginFun(value);
 
-    if (response.data.success) {
-      localStorage.setItem("token", response.data.token);
-      nav("/dashboard");
-      setLogin(true);
-    } else {
-      setError(response.error.data.message);
+      if (response.data.success) {
+        localStorage.setItem("token", response.data.token);
+
+        if (response.data?.user?.isAdmin == 1) {
+          nav("/admin/dashboard");
+        } else {
+          nav("/home");
+        }
+
+        setLogin(true);
+      } else {
+        setError(response.data.message || "Login failed");
+        console.log("unsuccessful login", response);
+      }
+    } catch (error) {
+      console.log("Caught error", error);
+      setError(error.response?.data?.message || "Invalid credentials");
     }
   };
 

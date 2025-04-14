@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useRegisterMutation } from "../../store/services/endpoints/auth.endpoint";
-import FormDataComponent from "../../components/FormData.component";
+import FormDataComponent from "../../Components/FormComponent/FormData.component";
 import { Button } from "../../Components";
 import { AllContext } from "../../context/AllContext";
 
