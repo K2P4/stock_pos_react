@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AllContext } from "../context/AllContext";
+import { AllContext } from "../../context/AllContext";
 
 const DashboardPage = () => {
   const { loginCheck, setLogin } = useContext(AllContext);

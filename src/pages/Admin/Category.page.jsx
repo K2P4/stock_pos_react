@@ -18,15 +18,15 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import ImportExportIcon from "@mui/icons-material/ImportExport";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
-import TableComponent from "../Components/Table.component";
-import CreateFormComponent from "../Components/CreateForm.component";
-import { AllContext } from "../context/AllContext";
+import TableComponent from "../../Components/Table/Table.component";
+import CreateFormComponent from "../../Components/FormComponent/CreateForm.component";
+import { AllContext } from "../../context/AllContext";
 import {
   useGetCategoryQuery,
   useLazyExportCategoryQuery,
-} from "../store/services/endpoints/category.endpoint";
-import CategoryTableComponent from "../Components/CategoryTable.component";
-import ImportComponent from "../Components/Import.component";
+} from "../../store/services/endpoints/category.endpoint";
+import CategoryTableComponent from "../../Components/Table/CategoryTable.component";
+import ImportComponent from "../../Components/Import.component";
 
 const CategoryPage = () => {
   const [open, setOpen] = useState(false);

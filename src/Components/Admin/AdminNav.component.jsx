@@ -3,28 +3,27 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Drawer,
   List,
-  Badge,
   ListItem,
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import HomeIcon from "@mui/icons-material/Home";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import ReceiptIcon from "@mui/icons-material/Receipt";
+import CategoryIcon from "@mui/icons-material/Category";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PersonIcon from "@mui/icons-material/Person";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import { useLogoutMutation } from "../../store/services/endpoints/auth.endpoint";
+import { AllContext } from "../../context/AllContext";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { useLogoutMutation } from "../store/services/endpoints/auth.endpoint";
-import { AllContext } from "../context/AllContext";
 
-const NavComponent = () => {
+const AdminNavComponent = () => {
   const location = useLocation();
   const { setLogout } = useContext(AllContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [cartAnchor, setCartAnchor] = React.useState(null);
-  const { cart } = useContext(AllContext);
 
   const cartOpen = Boolean(cartAnchor);
 
@@ -41,6 +40,10 @@ const NavComponent = () => {
   const handleOrder = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
+ 
+
+ 
 
   const handleCloseOrder = () => {
     setAnchorEl(null);
@@ -72,18 +75,36 @@ const NavComponent = () => {
       }}
     >
       <List>
-        {/* Home */}
+        {/* Dashboard */}
         <ListItem
           button
           className={`cursor-pointer `}
           component={Link}
-          to="/home"
+          to="/admin/dashboard"
           sx={{ mb: 3, mt: 5 }}
         >
           <ListItemIcon>
-            <HomeIcon
+            <DashboardIcon
               className={`hover:text-blue-400 duration-500 ${
-                location.pathname == "/home" ? "text-blue-400" : " "
+                location.pathname == "/admin/dashboard" ? "text-blue-400" : " "
+              } `}
+            />
+          </ListItemIcon>
+          <ListItemText />
+        </ListItem>
+
+        {/* Category */}
+        <ListItem
+          button
+          className=" cursor-pointer hover:bg-gray-50 transition-all duration-300 ease-in-out "
+          component={Link}
+          to="/admin/category"
+          sx={{ mb: 3 }}
+        >
+          <ListItemIcon>
+            <CategoryIcon
+              className={`hover:text-blue-400 duration-500 ${
+                location.pathname == "/admin/category" ? "text-blue-400" : " "
               } `}
             />
           </ListItemIcon>
@@ -91,33 +112,44 @@ const NavComponent = () => {
         </ListItem>
 
         {/* Stock */}
+
         <ListItem
           button
-          className={`cursor-pointer `}
-          component={Link}
-          to="/stock/cart"
-          sx={{ mb: 3, mt: 5 }}
+          className=" cursor-pointer hover:bg-gray-50 transition-all duration-300 ease-in-out "
+          sx={{ mb: 3 }}
         >
-          <ListItemIcon>
-            <Badge
-              badgeContent={cart.length}
-              smalls
-              sx={{
-                "& .MuiBadge-badge": {
-                  backgroundColor: "#FF6900",
-                  color: "white",
-                },
-              }}
-            >
-              <ShoppingCartIcon
-                className={`hover:text-blue-400 duration-500 ${
-                  location.pathname == "/stock/cart" ? "text-blue-400" : " "
-                } `}
-              />
-            </Badge>
+          <ListItemIcon
+            id="basic-cart"
+            aria-controls={cartOpen ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={cartOpen ? "true" : undefined}
+            onClick={handleCart}
+          >
+            <ShoppingCartIcon
+              className={`hover:text-blue-400 duration-500 ${
+                location.pathname.includes("stock") ? "text-blue-400" : " "
+              } `}
+            />
           </ListItemIcon>
           <ListItemText />
         </ListItem>
+
+        <Menu
+          className=""
+          anchorEl={cartAnchor}
+          open={cartOpen}
+          onClose={handleCloseCart}
+          MenuListProps={{
+            "aria-labelledby": "basic-cart",
+          }}
+        >
+          <MenuItem component={Link} to="/admin/stock" onClick={handleCloseCart}>
+            Stock List
+          </MenuItem>
+          <MenuItem component={Link} to="/admin/stock/cart" onClick={handleCloseCart}>
+            Add To Cart List
+          </MenuItem>
+        </Menu>
 
         {/* order */}
 
@@ -135,7 +167,7 @@ const NavComponent = () => {
           >
             <LocalShippingIcon
               className={`hover:text-blue-400 duration-500 ${
-                location.pathname.includes("/order") ? "text-blue-400" : " "
+                location.pathname.includes("/admin/order") ? "text-blue-400" : " "
               } `}
             />
           </ListItemIcon>
@@ -153,14 +185,14 @@ const NavComponent = () => {
         >
           <MenuItem
             component={Link}
-            to="/order/current"
+            to="/admin/order/current"
             onClick={handleCloseOrder}
           >
             Current Order
           </MenuItem>
           <MenuItem
             component={Link}
-            to="/order/history"
+            to="/admin/order/history"
             onClick={handleCloseOrder}
           >
             Order History
@@ -172,7 +204,7 @@ const NavComponent = () => {
           button
           className=" cursor-pointer hover:bg-gray-50 transition-all duration-300 ease-in-out "
           component={Link}
-          to="/invoices"
+          to="/admin/invoices"
           sx={{ mb: 3 }}
         >
           <ListItemIcon>
@@ -190,13 +222,13 @@ const NavComponent = () => {
           button
           className=" cursor-pointer hover:bg-gray-50 transition-all duration-300 ease-in-out "
           component={Link}
-          to="/profile"
+          to="/admin/profile"
           sx={{ mb: 3 }}
         >
           <ListItemIcon>
             <PersonIcon
               className={`hover:text-blue-400 duration-500 ${
-                location.pathname.includes("profile") ? "text-blue-400" : " "
+                location.pathname.includes('profile') ? "text-blue-400" : " "
               } `}
             />
           </ListItemIcon>
@@ -221,4 +253,4 @@ const NavComponent = () => {
   );
 };
 
-export default NavComponent;
+export default AdminNavComponent;

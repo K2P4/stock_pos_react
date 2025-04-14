@@ -6,6 +6,7 @@ const FormDataComponent = ({
   label,
   placeholder = "",
   onChange,
+  deliveryCheck =false
 }) => {
   return (
     <div className="  w-full space-y-3 mb-5 ">

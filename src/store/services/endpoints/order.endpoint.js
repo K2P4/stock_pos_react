@@ -3,14 +3,15 @@ import { Apiservice } from "../ApiService";
 const orderApi = Apiservice.injectEndpoints({
   endpoints: (builder) => ({
     createOrder: builder.mutation({
-      query: (item) => ({
-        url: "/place-order",
+      query: (formData) => ({
+        url: "/order/place-order",
         method: "POST",
-        body: item,
+        body: formData,
+        headers: {},
       }),
       invalidatesTags: ["order"],
     }),
   }),
 });
 
-export const {useCreateOrderMutation} = orderApi;
+export const { useCreateOrderMutation } = orderApi;

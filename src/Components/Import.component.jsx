@@ -22,7 +22,6 @@ const ImportComponent = ({ closeImport, categoryCheck = false }) => {
     if (categoryCheck) {
       try {
         const response = await importCategory(formData);
-        console.log("Upload Success:", response);
         setSnackbar(true);
       } catch (error) {
         console.error("Upload Error:", error);
@@ -30,7 +29,6 @@ const ImportComponent = ({ closeImport, categoryCheck = false }) => {
     }else{
       try {
         const response = await importStock(formData);
-        console.log("Upload Success:", response);
         setSnackbar(true);
       } catch (error) {
         console.error("Upload Error:", error);

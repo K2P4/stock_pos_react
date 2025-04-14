@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { AllContext } from "../context/AllContext";
+import { AllContext } from "../../context/AllContext";
 import { XIcon } from "lucide-react";
 
 const CartPage = () => {
@@ -138,7 +138,7 @@ const CartPage = () => {
               </p>
               <div className="mt-6">
                 <a
-                  href="#"
+                  href="/stock/checkout"
                   className="flex items-center justify-center rounded-md border border-transparent bg-blue-600 duration-500 transition-all px-6 py-3 text-base font-medium text-white shadow-xs hover:bg-blue-700"
                 >
                   Checkout

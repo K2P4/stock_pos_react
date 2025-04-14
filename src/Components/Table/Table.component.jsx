@@ -18,8 +18,8 @@ import {
   useDeleteStockMutation,
   useDetailStockQuery,
   useGetStocksQuery,
-} from "../store/services/endpoints/stock.endpoint";
-import EditFormComponent from "./EditForm.componet";
+} from "../../store/services/endpoints/stock.endpoint";
+import EditFormComponent from "../FormComponent/EditForm.componet";
 
 const TableComponent = ({
   stocks,
@@ -218,7 +218,7 @@ const TableComponent = ({
                   </TableCell>
                   <TableCell className="   " sx={{ fontFamily: "Poppins" }}>
                     <a
-                      href={`/stock/${stock._id}`}
+                      href={`/admin/stock/${stock._id}`}
                       className="text-blue-500 underline"
                     >
                       {stock.code}

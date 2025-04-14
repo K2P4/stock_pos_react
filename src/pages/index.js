@@ -1,11 +1,15 @@
-export {default as DashboardPage} from './Dashboard.page';
-export {default as StockPage} from './Stock.page';
-export {default as CategoryPage} from './Category.page';
-export {default as InvoicesPage} from './Invoices.page';
-export {default as ProfilePage} from './Profile.page';
-export {default as StockDetailPage} from './StockDetail.page'
-export {default as LoginPage} from './Auth/Login.page'
-export {default as RegisterPage} from './Auth/Register.page'
-export {default as OrderHistoryPage} from './OrderHistory.page'
-export {default as OrderCurrentPage} from './OrderCurrent.page'
-export {default as CartPage} from './Cart.page'
+export { default as DashboardPage } from "./Admin/Dashboard.page";
+export { default as StockPage } from "./Admin/Stock.page";
+export { default as CategoryPage } from "./Admin/Category.page";
+export { default as InvoicesPage } from "./Admin/Invoices.page";
+export { default as ProfilePage } from "./Admin/Profile.page";
+export { default as StockDetailPage } from "./Admin/StockDetail.page";
+export { default as LoginPage } from "./Auth/Login.page";
+export { default as RegisterPage } from "./Auth/Register.page";
+export { default as OrderHistoryPage } from "./Admin/OrderHistory.page";
+export { default as OrderCurrentPage } from "./Admin/OrderCurrent.page";
+export { default as CartPage } from "./Admin/Cart.page";
+export { default as CheckOutPage } from "./Admin/CheckOut.page";
+export { default as HomePage } from "./Shop/Home.page";
+export { default as ProductPage } from "./Shop/Product.page";
+export { default as AddToCartPage } from "./Shop/Cart.page";

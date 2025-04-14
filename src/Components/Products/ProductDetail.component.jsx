@@ -1,24 +1,23 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useDetailStockQuery } from "../store/services/endpoints/stock.endpoint";
+import { useDetailStockQuery } from "../../store/services/endpoints/stock.endpoint";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import StarIcon from "@mui/icons-material/Star";
 import { Button, Skeleton } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { Minus, MinusIcon, PlusIcon } from "lucide-react";
-import RecommendComponent from "../Components/Recommend.component";
-import { AllContext } from "../context/AllContext";
+import { MinusIcon, PlusIcon } from "lucide-react";
+import { AllContext } from "../../context/AllContext";
+import RecommendProductComponent from "./RecommendProduct.component";
 
-const StockDetailPage = () => {
+const ProductDetailComponent = () => {
   const { id } = useParams();
   const { data, isLoading } = useDetailStockQuery(id);
   const [quantity, setQuanity] = useState(1);
   const [atcDisabled, atcSetDisabled] = useState(false);
   const images = data?.stock?.images || [];
   const [selectedImage, setSelectedImage] = useState("");
-  const { addToCart } = useContext(AllContext);
+  const { addToCart,cart } = useContext(AllContext);
 
-  const { cart } = useContext(AllContext);
 
   useEffect(() => {
     const existingItem = cart.find((item) => item.id === data?.stock?._id);
@@ -38,7 +37,7 @@ const StockDetailPage = () => {
       name: data?.stock?.name,
       image: data?.stock?.images[0],
       price: discountPrice,
-      discount: discountPrice,
+      discount: data?.stock?.discountPercentage,
     };
 
     addToCart(newCart);
@@ -50,18 +49,20 @@ const StockDetailPage = () => {
 
   const finalPrice = quantity * data?.stock?.price;
 
+  console.log("catData", data);
+
   return (
     <div>
       {/* nav route */}
       <div className="text-xl  mb-17 font-semibold text-gray-800">
         <Link
           className="  text-left text-blue-400  border-b-blue-400 border-b"
-          to="/stock"
+          to="/home"
         >
-          Stock
+          Home
         </Link>
         <ArrowForwardIosIcon className=" text-gray-500   mx-4" />
-        <Link to="/stock"> {data?.stock?.name}</Link>
+        {data?.stock?.name}
       </div>
 
       {isLoading ? (
@@ -91,15 +92,15 @@ const StockDetailPage = () => {
                 {images.map((img, index) => (
                   <img
                     key={index}
-                    className="w-[180px] h-[90px] rounded-lg shadow-sm object-cover 
-                    border-gray-100 hover:border-blue-400 hover:scale-105 transition-transform"
+                    className="w-[180px] h-[85px] rounded-sm shadow-sm object-cover 
+                        border-gray-100 hover:border-blue-400 hover:scale-105 transition-transform"
                     src={img}
                     onMouseEnter={() => setSelectedImage(img)}
                   />
                 ))}
               </div>
               <img
-                className="w-full h-full border-gray-100 duration-500 rounded-lg shadow-sm object-cover"
+                className="w-full h-full border-gray-100 duration-500 rounded-sm shadow-sm object-cover"
                 src={selectedImage || images[0]}
                 alt="No Image"
               />
@@ -109,12 +110,25 @@ const StockDetailPage = () => {
           {/* Right - Product Details */}
           <div className="col-span-5 space-y-3 ">
             <div>
-              <p className="text-lg text-gray-500 mb-1">
-                {data?.stock?.categoryId?.name || "Unknown Category"}
+              <p className="text-lg capitalize text-gray-600 mb-1">
+                {data?.stock?.categoryId?.name || ""}
               </p>
-              <h1 className="font-bold text-3xl text-gray-800 mb-1">
-                {data?.stock?.name}{" "}
-              </h1>
+
+              <div className="flex items-center  justify-between ">
+                <h1 className="font-bold text-3xl text-gray-800 mb-4">
+                  {data?.stock?.name}{" "}
+                </h1>
+                {data?.stock?.status == 0 ? (
+                  <span className="text-xs px-2 py-1 rounded-lg text-center  bg-emerald-200 text-emerald-600 hover:bg-emerald-300 hover:text-emerald-800 duration-700 transition-all ease-in">
+                    Available
+                  </span>
+                ) : (
+                  <span className="text-xs px-2 py-1 rounded-lg text-center  bg-orange-200 text-orange-600 hover:bg-orange-300 hover:text-orange-800 duration-700 transition-all ease-in">
+                    Out Of Stocks
+                  </span>
+                )}
+              </div>
+
               <p className="text-md text-gray-500">
                 {data?.stock?.description || "No description available."}
               </p>
@@ -122,31 +136,33 @@ const StockDetailPage = () => {
             {/* Price */}
             <div>
               {data?.stock?.discountPercentage && (
-                <div className="flex items-center gap-4 ">
-                  <p className="text-xl font-semibold ">
-                    KS {Math.ceil(discountPrice)}
-                  </p>
+                <div>
+                  <div className="flex items-center gap-10 ">
+                    <p className="text-lg font-semibold ">
+                      KS {Math.ceil(discountPrice)}
+                    </p>
 
-                  <p className="border-blue-500 bg-blue-300 text-blue-500 text-center px-2 py-1 rounded-sm text-xs">
-                    {data?.stock?.discountPercentage}%
+                    <span className="   text-center  px-3  py-1 rounded-md  bg-orange-300 text-orange-500  hover:cursor-pointer hover:text-orange-600  font-medium text-xs  ">
+                      {data?.stock?.discountPercentage}%
+                    </span>
+                  </div>
+
+                  <p
+                    className={` ${
+                      data?.stock?.discountPercentage
+                        ? " line-through text-gray-400 "
+                        : "text-xl font-semibold"
+                    }`}
+                  >
+                    KS {Math.ceil(finalPrice)}
                   </p>
                 </div>
               )}
-
-              <p
-                className={` ${
-                  data?.stock?.discountPercentage
-                    ? " line-through text-gray-400 "
-                    : "text-xl font-semibold"
-                }`}
-              >
-                KS {Math.ceil(finalPrice)}
-              </p>
             </div>
 
             <div>
               {/* Rating & Status */}
-              <div className="flex items-center gap-4 mb-1">
+              <div className="flex items-center gap-4 mb-4">
                 <p className="text-lg text-gray-600 flex items-center">
                   {Array.from(
                     { length: data?.stock?.rating || 0 },
@@ -155,21 +171,6 @@ const StockDetailPage = () => {
                     )
                   )}
                 </p>
-                <p
-                  className={`text-lg ${
-                    data?.stock?.status === 0 ? "text-blue-400" : "text-red-500"
-                  }`}
-                >
-                  {data?.stock?.status == 0 ? "Available" : "Out Of Stocks"}
-                </p>
-              </div>
-
-              {/* In Stock */}
-              <div className="text-lg font-medium text-gray-700 mb-1 ">
-                <p className=" w-32  inline-flex ">InStock Pcs</p>
-                <span className="text-gray-500 text-left ">
-                  : {data?.stock?.inStock} Pcs
-                </span>
               </div>
             </div>
 
@@ -182,13 +183,13 @@ const StockDetailPage = () => {
                 className="flex items-center py-2  gap-5 bg-blue-500 "
               >
                 <PlusIcon
-                  className="  hover:bg-gray-400 active:scale-95 duration-500 transition-all rounded-full  "
+                  className="  hover:bg-blue-500 active:scale-95 duration-500 transition-all rounded-full  "
                   onClick={() => quantity > 0 && setQuanity((pre) => pre + 1)}
                 />
                 <span className="py-1  font-medium  ">{quantity}</span>
                 <MinusIcon
                   onClick={() => quantity > 1 && setQuanity((pre) => pre - 1)}
-                  className="  hover:bg-gray-400 active:scale-95 duration-500 transition-all rounded-full "
+                  className="  hover:bg-blue-500 active:scale-95 duration-500 transition-all rounded-full "
                 />
               </Button>
 
@@ -207,11 +208,13 @@ const StockDetailPage = () => {
         </div>
       )}
 
-      <div>
-        <RecommendComponent />
-      </div>
+      <RecommendProductComponent
+        categoryName={data?.stock?.categoryId?.name}
+        isLoading={isLoading}
+        featureData={data?.stockDataByCategory}
+      />
     </div>
   );
 };
 
-export default StockDetailPage;
+export default ProductDetailComponent;

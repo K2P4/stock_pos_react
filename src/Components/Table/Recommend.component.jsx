@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useGetStocksQuery } from "../store/services/endpoints/stock.endpoint";
+import { useGetStocksQuery } from "../../store/services/endpoints/stock.endpoint";
 import TableComponent from "./Table.component";
 
 const RecommendComponent = () => {
