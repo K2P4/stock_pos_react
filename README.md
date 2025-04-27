@@ -1,12 +1,28 @@
-# React + Vite
+# Stock POS React Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web application for managing inventory and processing sales transactions. It allows users to track stock levels, manage products, and handle sales.
 
-Currently, two official plugins are available:
+## Features
+- Add, edit, and manage products
+- Track stock levels in real-time
+- Process sales transactions
+- Generate invoices and receipts
+- Customer and sales reporting
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Getting Started
 
-## Expanding the ESLint configuration
+Follow these steps to get the project up and running locally.
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Prerequisites
+Make sure you have the following installed:
+- Node.js (LTS version)
+- npm (Node Package Manager)
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/stock-pos-react.git
+   cd folder-path
+   npm install
+2.Run npm run dev
