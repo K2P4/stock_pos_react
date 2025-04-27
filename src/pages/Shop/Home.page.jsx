@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import SearchIcon from "@mui/icons-material/Search";
-import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import { useGetProfileQuery } from "../../store/services/endpoints/auth.endpoint";
 import { useGetCategoryQuery } from "../../store/services/endpoints/category.endpoint";
 import { useGetStocksQuery } from "../../store/services/endpoints/stock.endpoint";
-import { ProductListComponent } from "../../Components";
+import { ProductListComponent, SearchComponent } from "../../Components";
 
 const HomePage = () => {
   const { data } = useGetProfileQuery();
   const [search, setSearch] = useState("");
   const [selectCategory, setSelectCat] = useState("");
   const [filterStock, setFilterStock] = useState([]);
+  const [sort, setSort] = useState("desc");
+  const [page, setPage] = useState(1);
+
   const [finalSearch, setFinal] = useState("");
   const { data: categoryData } = useGetCategoryQuery({
     search: "",
@@ -20,25 +20,20 @@ const HomePage = () => {
 
   const { data: productData, isLoading } = useGetStocksQuery({
     search: finalSearch,
-    page: 1,
+    perpage:15,
+    page: page,
   });
 
-  const filterCatData = categoryData?.data?.slice((0, 6));
+  console.log('data' , productData);
+
+
+
+
+
+
 
   const changeCategory = (data) => {
     setSelectCat(data);
-
-  };
-
-  const searchData = (e) => {
-    if (e.key == "Enter") {
-      e.preventDefault();
-      setFinal(search);
-    }
-  };
-
-  const handleSearch = (event) => {
-    setSearch(event.target.value);
   };
 
   useEffect(() => {
@@ -47,7 +42,6 @@ const HomePage = () => {
     const filteredData = selectCategory
       ? productData.data.filter((pd) => pd?.categoryId?._id == selectCategory)
       : productData.data;
-
 
     setFilterStock(filteredData);
   }, [productData, selectCategory]);
@@ -65,34 +59,23 @@ const HomePage = () => {
         </div>
 
         {/* Search Section */}
-        <div className="flex items-center gap-5">
-          <button className=" bg-gray-50 w-auto flex items-center gap-2  text-md justify-between  px-3 py-2   rounded-lg shadow-md text-gray-500 ">
-            <input
-              type="text"
-              value={search}
-              onKeyDown={searchData}
-              onChange={handleSearch}
-              placeholder="Search..."
-              className=" border-0 focus:border-0    outline-none   "
-            />
-            <SearchIcon className="text-gray-400" />
-          </button>
-
-          <FilterAltOutlinedIcon
-            sx={{ fontSize: 40 }}
-            className={` bg-gray-50 w-auto shadow-md p-2 "}  rounded-full  `}
-          />
-        </div>
+        <SearchComponent
+          search={search}
+          setSearch={setSearch}
+          sort={sort}
+          setFinal={setFinal}
+          setSort={setSort}
+        />
       </div>
 
-      <div className="flex items-center gap-3">
-        {filterCatData?.map((cat) => (
+      <div className="flex items-center gap-2">
+        {categoryData?.data?.slice(0,5).map((cat) => (
           <button
             key={cat?._id}
             onClick={() => changeCategory(cat?._id)}
             className={` border bg-gray-50  transition-all  ${
               selectCategory == cat?._id ? "bg-gray-200" : ""
-            }  shadow hover:bg-gray-200 duration-500 hover:cursor-pointer  w-32 px-3 py-2 rounded-lg `}
+            }  shadow hover:bg-gray-200 duration-500 hover:cursor-pointer  w-28 px-3 py-2 rounded-lg `}
           >
             {cat?.name}
           </button>
@@ -105,7 +88,7 @@ const HomePage = () => {
         </p>
       </div>
 
-      <ProductListComponent filterStock={filterStock} isLoading={isLoading} />
+      <ProductListComponent filterStock={filterStock} total={productData?.totalPage} page={page} setPage={setPage} isLoading={isLoading} />
     </div>
   );
 };

@@ -1,31 +1,27 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import Grid from "@mui/material/Grid";
-import { Radio, RadioGroup, FormControlLabel } from "@mui/material";
+import {
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  CircularProgress,
+} from "@mui/material";
 import * as yup from "yup";
-import { Formik, Form, Field, ErrorMessage, validateYupSchema } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import FormDataComponent from "../../Components/FormComponent/FormData.component";
-import { Button, Delivery } from "../../Components";
-import OrderSummaryComponent from "../../Components/OrderSummary.component";
+import { Delivery } from "../../Components";
 import ImageIcon from "@mui/icons-material/Image";
-import { useCreateDeliveryMutation } from "../../store/services/endpoints/delivery.enpoint";
+import { AllContext } from "../../context/AllContext";
+import { useCreateOrderMutation } from "../../store/services/endpoints/order.endpoint";
 
 const CheckOutPage = () => {
   const transitionRef = useRef(null);
+  const { cart, cartTotalAmount ,setCart } = useContext(AllContext);
+  const [orderForm] = useCreateOrderMutation();
   const [success, setSuccess] = useState(false);
-  const [deliveryForm] = useCreateDeliveryMutation();
-  const initialValue = {
-    email: "",
-    name: "",
-    address: "",
-    deliveryType: 0,
-    city: "",
-    phone: "",
-    township: "",
-    transitionRecord: "",
-    paymentType: 0,
-  };
+  const nav = useNavigate();
 
   const validationSchema = yup.object({
     email: yup.string().required("email is required"),
@@ -44,6 +40,18 @@ const CheckOutPage = () => {
     }),
   });
 
+  const taxRate = 0.005;
+  const calculateTax = (amount) => {
+    return amount > 200000 ? amount * taxRate : 0;
+  };
+
+  const calculateTotalAmount = (delivery) => {
+    const deliveryCost = delivery == 0 ? 3000 : 5000;
+    const subtotal = cartTotalAmount + deliveryCost;
+    const tax = calculateTax(subtotal);
+    return subtotal + tax;
+  };
+
   useEffect(() => {
     if (success) {
       setTimeout(() => {
@@ -52,15 +60,17 @@ const CheckOutPage = () => {
     }
   }, [success]);
 
-  const uploadTransition = (e, setFieldValue) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFieldValue("transitionRecord", file);
-    }
-  };
-
-  const hanldeTransition = () => {
-    transitionRef.current.click();
+  const initialValue = {
+    email: "",
+    name: "",
+    address: "",
+    deliveryType: 0,
+    city: "",
+    phone: "",
+    township: "",
+    transitionRecord: "",
+    paymentType: 0,
+    items: cart,
   };
 
   const handleSubmit = async (value) => {
@@ -73,14 +83,31 @@ const CheckOutPage = () => {
     formDataApi.append("deliveryType", Number(value.deliveryType));
     formDataApi.append("township", value.township);
     formDataApi.append("city", value.city);
+    formDataApi.append("items", JSON.stringify(value.items));
 
     if (value.transitionRecord) {
       formDataApi.append("transitionRecord", value.transitionRecord);
     }
 
-    const response = await deliveryForm(formDataApi);
+    const response = await orderForm(formDataApi);
+    if (response.error) {
+      console.error(response.error.data.message);
+    } else {
+      setSuccess(true);
+      setCart([]);
+      nav("/order/current");
+    }
+  };
 
-    console.log(response);
+  const uploadTransition = (e, setFieldValue) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFieldValue("transitionRecord", file);
+    }
+  };
+
+  const hanldeTransition = () => {
+    transitionRef.current.click();
   };
 
   return (
@@ -88,7 +115,7 @@ const CheckOutPage = () => {
       {/* Snack Bar */}
       {success && (
         <p className="bg-gray-400 text-gray-50 text-sm px-2 py-1 float-end w-auto shadow-sm rounded-md">
-          Added Information successfully!
+          Order successfully!
         </p>
       )}
 
@@ -104,17 +131,17 @@ const CheckOutPage = () => {
         <Link to="/stock/checkout">Check Out</Link>
       </div>
 
-      <Grid container spacing={2}>
-        <Grid item sm={7} md={7} lg={7}>
-          <Formik
-            validateOnChange={false}
-            validateOnBlur={false}
-            validationSchema={validationSchema}
-            initialValues={initialValue}
-            onSubmit={handleSubmit}
-          >
-            {({ isSubmitting, handleChange, handleBlur, values }) => (
-              <Form>
+      <Formik
+        validateOnChange={false}
+        validateOnBlur={false}
+        validationSchema={validationSchema}
+        initialValues={initialValue}
+        onSubmit={handleSubmit}
+      >
+        {({ isSubmitting, handleChange, handleBlur, values }) => (
+          <Form className="pb-5">
+            <Grid container spacing={2}>
+              <Grid item sm={12} md={7} lg={7}>
                 <div className=" border  rounded-xl  p-5 bg-gray-50 w-full shadow-xl">
                   <h1 className="  text-xl font-medium  text-left mb-5">
                     Contact Information
@@ -298,10 +325,16 @@ const CheckOutPage = () => {
                     </Grid>
                   </Grid>
 
-                  <p className="text-xs text-red-400 mt-0">
-                    *Please note that you must send the transition slip to our
-                    system after you paid.
-                  </p>
+                  {values.paymentType === "0" || values.paymentType === "1" ? (
+                    <p className="text-xs text-red-400 mt-0">
+                      *Please note that you must send the transition slip to our
+                      system after you paid.
+                    </p>
+                  ) : (
+                    <p className="text-xs text-red-400 mt-0">
+                      *Don't need to send the transition slip.
+                    </p>
+                  )}
 
                   <div className="mt-8 mb-1">
                     <p>
@@ -344,7 +377,10 @@ const CheckOutPage = () => {
                     </Field>
 
                     <p className="text-sm text-gray-400 m-auto text-center">
-                      upload slip here <ImageIcon className="text-gray-400 " />
+                      {values.transitionRecord
+                        ? "uploaded "
+                        : "upload slip here"}
+                      <ImageIcon className="text-gray-400 " />
                     </p>
                   </div>
 
@@ -354,23 +390,131 @@ const CheckOutPage = () => {
                       <span className="text-blue-400"> 0968213232</span>
                     </p>
                   </div>
-
-                  <Button
-                    disabled={isSubmitting}
-                    type={"submit"}
-                    name={"save"}
-                    label={"Save"}
-                  />
                 </div>
-              </Form>
-            )}
-          </Formik>
-        </Grid>
+              </Grid>
 
-        <Grid item sm={5} md={5} lg={5}>
-          <OrderSummaryComponent />
-        </Grid>
-      </Grid>
+              <Grid item sm={12} md={5} lg={5}>
+                {cart?.length > 0 ? (
+                  <div className="flex  flex-col rounded-lg   bg-gray-50 w-full shadow-xl">
+                    <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+                      <div className="flex items-start justify-between">
+                        <h1 className="text-lg font-medium text-gray-900">
+                          Order Summary
+                        </h1>
+                      </div>
+
+                      <div className="mt-8">
+                        <div className="flow-root">
+                          <ul
+                            role="list"
+                            className="-my-6 divide-y divide-gray-200"
+                          >
+                            {cart.map((product) => (
+                              <li key={product.id} className="flex py-6">
+                                <div className="size-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
+                                  <img
+                                    src={product?.image}
+                                    className="size-full object-cover"
+                                  />
+                                </div>
+
+                                <div className="ml-4 flex flex-1 flex-col">
+                                  <div>
+                                    <div className="flex justify-between text-base font-medium text-gray-900">
+                                      <h3>
+                                        <a
+                                          href={`/stock/${product.id}`}
+                                          className="text-black hover:underline  duration-500 cursor-pointer "
+                                        >
+                                          {product?.name}
+                                        </a>
+                                      </h3>
+
+                                      <p className=" ml-4">
+                                        {" "}
+                                         {product?.price.toLocaleString()} MMK
+                                      </p>
+                                    </div>
+                                    <p className="mt-1 text-sm text-gray-500">
+                                      {product.color}
+                                    </p>
+                                    <p className="text-gray-700  mb-2">
+                                      {product?.discount}%
+                                    </p>
+                                  </div>
+                                  <p className="text-gray-500">
+                                    Qty {product?.quantity}
+                                  </p>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border-t space-y-4  border-gray-200 px-4 py-6 sm:px-6">
+                      <div className="flex justify-between text-base font-medium text-gray-900">
+                        <p>Subtotal</p>
+                        <p> {cartTotalAmount.toLocaleString()} MMK</p>
+                      </div>
+
+                      <div className="flex justify-between text-base font-medium text-gray-900">
+                        <p>Tax</p>
+                        <p>
+                        {" "}
+                          {calculateTax(cartTotalAmount)
+                            .toFixed(0)
+                            .toLocaleString()} MMK
+                        </p>
+                      </div>
+
+                      <div className="flex justify-between text-base font-medium text-gray-900">
+                        <p>Delivery Fee</p>
+                        <p> {values.deliveryType == 0 ? 3000 : 5000} MMK</p>
+                      </div>
+                    </div>
+
+                    <div className="border-t space-y-4  border-gray-200 px-4 py-6 sm:px-6">
+                      <div className="flex justify-between text-base font-medium text-gray-900">
+                        <p>All Total</p>
+                        <p>
+                          {calculateTotalAmount(
+                            values.deliveryType
+                          ).toLocaleString()} MMK
+                        </p>
+                      </div>
+
+                      <button
+                        disabled={isSubmitting}
+                        type="submit"
+                        className="flex items-center hover:cursor-pointer mt-7 w-full justify-center rounded-md border border-transparent bg-blue-600 duration-500 transition-all px-6 py-3 text-base font-medium text-white shadow-xs hover:bg-blue-700"
+                      >
+                        {isSubmitting ? (
+                          <CircularProgress color="inherit" size="30px" />
+                        ) : (
+                          "Place Order"
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="py-10 flex flex-col  justify-center  items-center w-full  h-[500px] m-auto ">
+                    <img
+                      src="../../public/empty-cart.png"
+                      className="w-xl m-auto  h-72  object-contain mb-0 "
+                    />
+
+                    <p className="text-center text-gray-500 ">
+                      Your Cart is empty
+                    </p>
+                  </div>
+                )}
+              </Grid>
+            </Grid>
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 };

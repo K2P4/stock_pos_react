@@ -111,7 +111,7 @@ const NavComponent = () => {
             >
               <ShoppingCartIcon
                 className={`hover:text-blue-400 duration-500 ${
-                  location.pathname == "/stock/cart" ? "text-blue-400" : " "
+                  location.pathname.includes('stock') ? "text-blue-400" : " "
                 } `}
               />
             </Badge>

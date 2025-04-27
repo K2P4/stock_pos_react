@@ -14,7 +14,7 @@ const RecommendProductComponent = ({
         Featured List {categoryName}{" "}
       </h1>
 
-      <ProductListComponent filterStock={featureData} isLoading={isLoading} />
+      <ProductListComponent checkPaginate={false} filterStock={featureData} isLoading={isLoading} />
     </div>
   );
 };

@@ -41,10 +41,6 @@ const AdminNavComponent = () => {
     setAnchorEl(event.currentTarget);
   };
 
- 
-
- 
-
   const handleCloseOrder = () => {
     setAnchorEl(null);
   };
@@ -116,15 +112,11 @@ const AdminNavComponent = () => {
         <ListItem
           button
           className=" cursor-pointer hover:bg-gray-50 transition-all duration-300 ease-in-out "
+          component={Link}
+          to="/admin/stock"
           sx={{ mb: 3 }}
         >
-          <ListItemIcon
-            id="basic-cart"
-            aria-controls={cartOpen ? "basic-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={cartOpen ? "true" : undefined}
-            onClick={handleCart}
-          >
+          <ListItemIcon>
             <ShoppingCartIcon
               className={`hover:text-blue-400 duration-500 ${
                 location.pathname.includes("stock") ? "text-blue-400" : " "
@@ -134,70 +126,26 @@ const AdminNavComponent = () => {
           <ListItemText />
         </ListItem>
 
-        <Menu
-          className=""
-          anchorEl={cartAnchor}
-          open={cartOpen}
-          onClose={handleCloseCart}
-          MenuListProps={{
-            "aria-labelledby": "basic-cart",
-          }}
-        >
-          <MenuItem component={Link} to="/admin/stock" onClick={handleCloseCart}>
-            Stock List
-          </MenuItem>
-          <MenuItem component={Link} to="/admin/stock/cart" onClick={handleCloseCart}>
-            Add To Cart List
-          </MenuItem>
-        </Menu>
-
         {/* order */}
 
         <ListItem
           button
           className=" cursor-pointer hover:bg-gray-50 transition-all duration-300 ease-in-out "
+          component={Link}
+          to="/admin/order/history"
           sx={{ mb: 3 }}
         >
-          <ListItemIcon
-            id="basic-button"
-            aria-controls={open ? "basic-menu" : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? "true" : undefined}
-            onClick={handleOrder}
-          >
+          <ListItemIcon>
             <LocalShippingIcon
               className={`hover:text-blue-400 duration-500 ${
-                location.pathname.includes("/admin/order") ? "text-blue-400" : " "
+                location.pathname.includes("order")
+                  ? "text-blue-400"
+                  : " "
               } `}
             />
           </ListItemIcon>
           <ListItemText />
         </ListItem>
-
-        <Menu
-          className=""
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleCloseOrder}
-          MenuListProps={{
-            "aria-labelledby": "basic-button",
-          }}
-        >
-          <MenuItem
-            component={Link}
-            to="/admin/order/current"
-            onClick={handleCloseOrder}
-          >
-            Current Order
-          </MenuItem>
-          <MenuItem
-            component={Link}
-            to="/admin/order/history"
-            onClick={handleCloseOrder}
-          >
-            Order History
-          </MenuItem>
-        </Menu>
 
         {/* Invoices */}
         <ListItem
@@ -228,7 +176,7 @@ const AdminNavComponent = () => {
           <ListItemIcon>
             <PersonIcon
               className={`hover:text-blue-400 duration-500 ${
-                location.pathname.includes('profile') ? "text-blue-400" : " "
+                location.pathname.includes("profile") ? "text-blue-400" : " "
               } `}
             />
           </ListItemIcon>

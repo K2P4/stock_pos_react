@@ -10,7 +10,9 @@ import {
   InvoicesPage,
   LoginPage,
   OrderCurrentPage,
+  OrderDetailPage,
   OrderHistoryPage,
+  OrderShopHistoryPage,
   ProductPage,
   ProfilePage,
   RegisterPage,
@@ -34,25 +36,30 @@ const App = () => {
             <Route path="category" element={<CategoryPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="stock" element={<StockPage />} />
+
+            {/* Order  */}
             <Route path="order/history" element={<OrderHistoryPage />} />
-            <Route path="order/current" element={<OrderCurrentPage />} />
+            <Route path="order/:id" element={<OrderDetailPage />} />
+
+            {/* Stock  */}
             <Route path="stock/:id" element={<StockDetailPage />} />
             <Route path="stock/cart" element={<CartPage />} />
-            <Route path="stock/checkout" element={<CheckOutPage />} />
           </Route>
 
           {/* POS User Routes (Only for Normal Users) */}
           <Route path="/" element={<MainLayout />}>
             <Route path="home" element={<HomePage />} />
-            <Route path="order/current" element={<AddToCartPage />} />
-            <Route path="order/history" element={<AddToCartPage />} />
             <Route path="invoices" element={<AddToCartPage />} />
-            <Route path="profile" element={<AddToCartPage />} />
+
+            {/* Order  */}
+            <Route path="order/history" element={<OrderShopHistoryPage />} />
+            <Route path="order/current" element={<OrderCurrentPage />} />
 
             {/* Stock */}
             <Route path="stock" element={<ProductPage />} />
             <Route path="stock/:id" element={<ProductDetailComponent />} />
-            <Route path="stock/cart" element={<CartPage />} />
+            <Route path="stock/cart" element={<AddToCartPage />} />
+            <Route path="stock/checkout" element={<CheckOutPage />} />
           </Route>
         </Route>
 
