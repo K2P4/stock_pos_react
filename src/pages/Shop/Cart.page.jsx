@@ -1,21 +1,58 @@
-<<<<<<< Updated upstream:src/pages/Cart.page.jsx
 import React, { useContext, useState } from "react";
 import { MinusIcon, PlusIcon } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { AllContext } from "../context/AllContext";
 import { XIcon } from "lucide-react";
-=======
-import React from "react";
->>>>>>> Stashed changes:src/pages/Admin/Cart.page.jsx
+import { AllContext } from "../../context/AllContext";
 
-const CartPage = () => {
- 
 
+const ProductPage = () => {
+  const { cart, cartTotalAmount, removeCart, addToCart } = useContext(AllContext);
+
+
+  const nav = useNavigate();
+  const addQuantity = (id) => {
+    const currentItem = cart.find((item) => item.id == id);
+    let addQ = currentItem.quantity + 1;
+
+    const updateCart = {
+      id: currentItem.id,
+      quantity: currentItem.quantity + 1,
+      price: (currentItem.price / currentItem.quantity) * addQ,
+    };
+
+
+    addToCart(updateCart);
+  };
+
+  const removeQuantity = (id) => {
+    const currentItem = cart.find((item) => item.id == id);
+    let removeQ = currentItem.quantity - 1;
+
+    const updateCart = {
+      id: currentItem.id,
+      quantity: currentItem.quantity - 1,
+      price: (currentItem.price / currentItem.quantity) * removeQ,
+    };
+    addToCart(updateCart);
+  };
+
+
+  console.log('cart',cart);
   return (
-   <div>
+    <div>
+      {/* nav route */}
+      <div className="text-xl font-semibold text-gray-800">
+        <Link
+          className="  text-left text-blue-400  border-b-blue-400 border-b"
+          to="/home"
+        >
+          Home
+        </Link>
+        <ArrowForwardIosIcon className=" text-gray-500   mx-4" />
+        <Link to="/stock/cart">Cart List</Link>
+      </div>
 
-<<<<<<< Updated upstream:src/pages/Cart.page.jsx
       <div
         transition
         className="pointer-events-auto   transform transition duration-500 ease-in-out  mt-10 sm:duration-700"
@@ -87,7 +124,7 @@ const CartPage = () => {
                               />
                             </div>
 
-                            <p className="ml-4">${product.price}</p>
+                            <p className="ml-4">{Number(product.price).toLocaleString()} MMK</p>
                           </div>
                         </div>
                       </li>
@@ -98,16 +135,16 @@ const CartPage = () => {
             </div>
 
             <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
-              <div className="flex justify-between text-base font-medium text-gray-900">
+              <div className="flex justify-between text-md font-medium text-gray-900">
                 <p>Subtotal</p>
-                <p>${totalAmount}</p>
+                <p>{cartTotalAmount.toLocaleString()} MMK</p>
               </div>
               <p className="mt-0.5 text-sm text-gray-500">
                 Shipping and taxes calculated at checkout.
               </p>
               <div className="mt-6">
                 <a
-                  href="#"
+                  href="/stock/checkout"
                   className="flex items-center justify-center rounded-md border border-transparent bg-blue-600 duration-500 transition-all px-6 py-3 text-base font-medium text-white shadow-xs hover:bg-blue-700"
                 >
                   Checkout
@@ -117,6 +154,7 @@ const CartPage = () => {
                 <p>
                   or{" "}
                   <button
+                  onClick={() => nav('/home')}
                     type="button"
                     className="font-medium text-blue-600 duration-500 hover:text-blue-500"
                   >
@@ -139,11 +177,7 @@ const CartPage = () => {
         )}
       </div>
     </div>
-=======
-    Cart
-   </div>
->>>>>>> Stashed changes:src/pages/Admin/Cart.page.jsx
   );
 };
 
-export default CartPage;
+export default ProductPage;

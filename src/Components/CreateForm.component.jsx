@@ -161,7 +161,6 @@ const CreateFormComponent = ({ handleClose, checkCategory = false }) => {
                   <div className=" mb-3 ">
                     <p>Code</p>
                     <input
-                      required
                       className="border p-2 mt-1 focus:outline-none w-full rounded-xl"
                       type="text"
                       name="code"

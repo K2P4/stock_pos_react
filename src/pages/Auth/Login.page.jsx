@@ -33,9 +33,7 @@ const LoginPage = () => {
       }, 3000);
     }
 
-    // if (localStorage.getItem("token")) {
-    //   nav("/dashboard");
-    // }
+
 
     return () => {
       if (timer) clearTimeout(timer);

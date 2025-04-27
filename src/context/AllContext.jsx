@@ -18,6 +18,8 @@ export const ContextProvider = ({ children }) => {
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
+
+   
   }, [cart]);
 
   const addToCart = (item, updateCheck = false) => {
@@ -47,19 +49,18 @@ export const ContextProvider = ({ children }) => {
     }
   };
 
-  const totalAmount = cart.reduce((total, item) => total + item.price, 0);
+  const cartTotalAmount = cart.reduce((total, item) => total + item.price, 0);
 
   return (
     <AllContext.Provider
       value={{
         success,
-        totalAmount,
+        cartTotalAmount,
         setSuccess,
         removeCart,
         cart,
         setCart,
         addToCart,
-        totalAmount,
         editSuccess,
         setEditSuccess,
         loginCheck,

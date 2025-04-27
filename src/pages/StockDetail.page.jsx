@@ -36,6 +36,7 @@ const StockDetailPage = () => {
       id: data?.stock?._id,
       quantity,
       name: data?.stock?.name,
+      description:data?.stock?.description,
       image: data?.stock?.images[0],
       price: discountPrice,
       discount: discountPrice,
