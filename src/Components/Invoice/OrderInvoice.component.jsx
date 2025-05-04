@@ -1,10 +1,15 @@
 import React from "react";
-import {
-  Dialog
-} from "@mui/material";
+import { Dialog } from "@mui/material";
 
-const OrderInvoiceComponent = ({open,setOpen,handleClose,orders,calculateSubTotal,taxAmount,deliveryFee}) => {
-
+const OrderInvoiceComponent = ({
+  open,
+  setOpen,
+  handleClose,
+  orders,
+  calculateSubTotal,
+  taxAmount,
+  deliveryFee,
+}) => {
   return (
     <div>
       <button
@@ -15,9 +20,8 @@ const OrderInvoiceComponent = ({open,setOpen,handleClose,orders,calculateSubTota
         View Invoice
       </button>
 
-
-        {/* verify record form */}
-        <Dialog
+      {/* verify record form */}
+      <Dialog
         className="rounded-xl mx-auto  bg-transparent  shadow-sm"
         fullWidth
         maxWidth="md"
@@ -29,9 +33,13 @@ const OrderInvoiceComponent = ({open,setOpen,handleClose,orders,calculateSubTota
         }}
       >
         <div className="flex p-5  flex-col rounded-lg   bg-gray-50 w-full ">
-          <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
-            <div className="flex items-start justify-between">
-              <h1 className="text-lg font-medium text-gray-900">Invoice</h1>
+          <div className="flex-1 overflow-y-auto px-4 sm:px-6">
+            <div className="flex items-center justify-between">
+              <img
+                src="/logo-xpos.png"
+                className="size-full w-20  h-20 object-cover"
+              />
+              <p className="text-lg font-medium text-gray-900">Invoice</p>
             </div>
 
             <div className="mt-8">
@@ -50,9 +58,7 @@ const OrderInvoiceComponent = ({open,setOpen,handleClose,orders,calculateSubTota
                         <div>
                           <div className="flex justify-between text-sm font-medium text-gray-900">
                             <h3>
-                              <a
-                                className="text-black hover:underline  duration-500 cursor-pointer "
-                              >
+                              <a className="text-black hover:underline  duration-500 cursor-pointer ">
                                 {product?.name}
                               </a>
                             </h3>

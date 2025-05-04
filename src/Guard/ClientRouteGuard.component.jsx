@@ -1,21 +1,23 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useGetProfileQuery } from "../store/services/endpoints/auth.endpoint";
 
-const PublicGuardComponent = () => {
+const ClientRouteGuardComponent = () => {
   const token = localStorage.getItem("token");
   const { data, isLoading } = useGetProfileQuery();
 
   if (isLoading) {
-    return <div className="flex flex-col justify-center  h-lvh  text-center m-auto ">Loading...</div>;
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
-  if (token && data?.user?.isAdmin === 1) {
+  if (!token || !data?.user) {
+    return <Navigate to="/client/login" replace />;
+  }
+
+  if (data.user.isAdmin === 1) {
     return <Navigate to="/admin/dashboard" replace />;
-  } else if (token && data?.user?.isAdmin !== 1) {
-    return <Navigate to="/home" replace />;
   }
 
   return <Outlet />;
 };
 
-export default PublicGuardComponent;
+export default ClientRouteGuardComponent;

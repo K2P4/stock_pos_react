@@ -49,8 +49,9 @@ export const ContextProvider = ({ children }) => {
     }
   };
 
-  const cartTotalAmount = cart.reduce((total, item) => total + item.price, 0);
+  const cartTotalAmount = Math.ceil(cart.reduce((total, item) => total + Number(item.price), 0));
 
+  
   return (
     <AllContext.Provider
       value={{

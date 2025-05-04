@@ -12,16 +12,22 @@ import {
 import React, { useEffect, useState } from "react";
 import { useUpdateOrderMutation } from "../../store/services/endpoints/order.endpoint";
 
-const OrderFormComponent = ({ orderId, statusId , setOpen, handleClose , open }) => {
+const OrderFormComponent = ({
+  orderId,
+  statusId,
+  setOpen,
+  handleClose,
+  open,
+}) => {
   console.log("id", statusId);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [updateOrder] = useUpdateOrderMutation();
   const [formData, setFormData] = useState(
     { status: statusId },
-    { deliveryDate: null }
+    { deliveryDate: null },
+    { payDate: null }
   );
-
 
   const orderStatus = [
     { id: 0, name: "Pending" },
@@ -91,9 +97,13 @@ const OrderFormComponent = ({ orderId, statusId , setOpen, handleClose , open })
         }}
       >
         <DialogTitle
-          sx={{ fontFamily: "Poppins", textAlign: "center" }}
+          sx={{ fontFamily: "Poppins", textAlign: "center" , display : "flex" , alignItems: "center" , justifyContent:"space-between" }}
           id="responsive-dialog-title"
         >
+          <img
+            src="/logo-xpos.png"
+            className="size-full w-20  h-20 object-cover"
+          />
           Edit Order
         </DialogTitle>
         <DialogContent>
@@ -119,7 +129,7 @@ const OrderFormComponent = ({ orderId, statusId , setOpen, handleClose , open })
 
             {/* delievryDate */}
             {formData?.status === 2 && (
-              <div className="flex flex-col mt-5">
+              <div className="flex flex-col space-y-4 mt-5">
                 <label htmlFor="deliveryDate">Delivery Date</label>
                 <input
                   type="date"
@@ -132,7 +142,23 @@ const OrderFormComponent = ({ orderId, statusId , setOpen, handleClose , open })
                       deliveryDate: e.target.value,
                     }))
                   }
-                  className="border rounded-md p-2 mt-2"
+                  className="border rounded-md p-2 mt-0"
+                  required
+                />
+
+                <label htmlFor="payDate">Pay Date</label>
+                <input
+                  type="date"
+                  id="payDate"
+                  name="payDate"
+                  value={formData.payDate || null}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      payDate: e.target.value,
+                    }))
+                  }
+                  className="border rounded-md p-2 mt-0"
                   required
                 />
               </div>

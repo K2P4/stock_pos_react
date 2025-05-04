@@ -4,6 +4,7 @@ import { AllContext } from "../../context/AllContext";
 
 const DashboardPage = () => {
   const { loginCheck, setLogin } = useContext(AllContext);
+ 
   const nav = useNavigate();
   useEffect(() => {
     let timer;

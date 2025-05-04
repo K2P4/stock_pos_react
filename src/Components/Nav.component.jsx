@@ -52,7 +52,7 @@ const NavComponent = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setLogout(true);
-    nav("/login");
+    nav("/client/login");
   };
 
   return (

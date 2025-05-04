@@ -5,8 +5,7 @@ export { default as CategoryPage } from "./Admin/Category.page";
 export { default as InvoicesPage } from "./Admin/Invoices.page";
 export { default as ProfilePage } from "./Admin/Profile.page";
 export { default as StockDetailPage } from "./Admin/StockDetail.page";
-export { default as LoginPage } from "./Auth/Login.page";
-export { default as RegisterPage } from "./Auth/Register.page";
+
 export { default as OrderDetailPage } from "./Admin/OrderDetail.page";
 export { default as OrderHistoryPage } from "./Admin/OrderHistory.page";
 
@@ -20,3 +19,10 @@ export { default as AddToCartPage } from "./Shop/Cart.page";
 export { default as CheckOutPage } from "./Shop/CheckOut.page";
 export { default as OrderCurrentPage } from "./Shop/OrderCurrent.page";
 export { default as OrderShopHistoryPage } from "./Shop/OrderHistory.page";
+
+
+//Auth
+export { default as LoginPage } from "./Auth/Login.page";
+export { default as RegisterPage } from "./Auth/Register.page";
+export { default as ClientRegisterPage } from "./Auth/ClientRegister.page";
+export { default as ClientLoginPage } from "./Auth/ClientLogin.page";

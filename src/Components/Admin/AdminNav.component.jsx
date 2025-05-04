@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Drawer,
   List,
+  Badge,
   ListItem,
   ListItemIcon,
   ListItemText,
@@ -18,34 +19,38 @@ import { useLogoutMutation } from "../../store/services/endpoints/auth.endpoint"
 import { AllContext } from "../../context/AllContext";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import { useGetOrdersQuery } from "../../store/services/endpoints/order.endpoint";
 
 const AdminNavComponent = () => {
   const location = useLocation();
   const { setLogout } = useContext(AllContext);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [cartAnchor, setCartAnchor] = React.useState(null);
+  const { data } = useGetOrdersQuery({});
 
-  const cartOpen = Boolean(cartAnchor);
 
-  const handleCart = (event) => {
-    setCartAnchor(event.currentTarget);
-  };
 
-  const open = Boolean(anchorEl);
+  // const cartOpen = Boolean(cartAnchor);
 
-  const handleCloseCart = () => {
-    setCartAnchor(null);
-  };
+  // const handleCart = (event) => {
+  //   setCartAnchor(event.currentTarget);
+  // };
 
-  const handleOrder = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+  // const open = Boolean(anchorEl);
 
-  const handleCloseOrder = () => {
-    setAnchorEl(null);
-  };
+  // const handleCloseCart = () => {
+  //   setCartAnchor(null);
+  // };
 
-  const [logoutFun] = useLogoutMutation();
+  // const handleOrder = (event) => {
+  //   setAnchorEl(event.currentTarget);
+  // };
+
+  // const handleCloseOrder = () => {
+  //   setAnchorEl(null);
+  // };
+
+  // const [logoutFun] = useLogoutMutation();
   const nav = useNavigate();
 
   const handleLogout = () => {
@@ -136,13 +141,22 @@ const AdminNavComponent = () => {
           sx={{ mb: 3 }}
         >
           <ListItemIcon>
-            <LocalShippingIcon
-              className={`hover:text-blue-400 duration-500 ${
-                location.pathname.includes("order")
-                  ? "text-blue-400"
-                  : " "
-              } `}
-            />
+            <Badge
+              badgeContent={data?.pendingCount}
+              smalls
+              sx={{
+                "& .MuiBadge-badge": {
+                  backgroundColor: "#FF6900",
+                  color: "white",
+                },
+              }}
+            >
+              <LocalShippingIcon
+                className={`hover:text-blue-400 duration-500 ${
+                  location.pathname.includes("order") ? "text-blue-400" : " "
+                } `}
+              />
+            </Badge>
           </ListItemIcon>
           <ListItemText />
         </ListItem>

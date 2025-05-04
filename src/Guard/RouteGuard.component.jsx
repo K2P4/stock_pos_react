@@ -5,6 +5,8 @@ const RouteGuardComponent = () => {
   const { data, isLoading } = useGetProfileQuery();
   const token = localStorage.getItem("token");
   const location = useLocation();
+  const isAdmin = data?.user?.isAdmin === 1;
+
 
   if (isLoading) {
     return (
@@ -15,22 +17,9 @@ const RouteGuardComponent = () => {
   }
 
   if (!token || !data) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/client/login" replace />;
   }
 
-  const isAdmin = data?.user?.isAdmin === 1;
-
-  // if (token && data) {
-  //   if (location.pathname.startsWith("/admin")) {
-  //     if (!isAdmin) {
-  //       return <Navigate to="/home" replace />;
-  //     }
-  //   } else {
-  //     if (isAdmin) {
-  //       return <Navigate to="/admin/dashboard" replace />;
-  //     }
-  //   }
-  // }
 
   if (location.pathname.startsWith("/admin") && !isAdmin) {
     return <Navigate to="/home" replace />;

@@ -18,7 +18,7 @@ import { useCreateOrderMutation } from "../../store/services/endpoints/order.end
 
 const CheckOutPage = () => {
   const transitionRef = useRef(null);
-  const { cart, cartTotalAmount ,setCart } = useContext(AllContext);
+  const { cart, cartTotalAmount, setCart } = useContext(AllContext);
   const [orderForm] = useCreateOrderMutation();
   const [success, setSuccess] = useState(false);
   const nav = useNavigate();
@@ -329,10 +329,14 @@ const CheckOutPage = () => {
                     <p className="text-xs text-red-400 mt-0">
                       *Please note that you must send the transition slip to our
                       system after you paid.
+
+                      <p>*We will contact within 15 mins after ordered</p>
+
                     </p>
                   ) : (
                     <p className="text-xs text-red-400 mt-0">
                       *Don't need to send the transition slip.
+                      <p>*We will contact within 15 mins after ordered</p>
                     </p>
                   )}
 
@@ -432,7 +436,7 @@ const CheckOutPage = () => {
 
                                       <p className=" ml-4">
                                         {" "}
-                                         {product?.price.toLocaleString()} MMK
+                                        {product?.price.toLocaleString()} MMK
                                       </p>
                                     </div>
                                     <p className="mt-1 text-sm text-gray-500">
@@ -462,10 +466,11 @@ const CheckOutPage = () => {
                       <div className="flex justify-between text-base font-medium text-gray-900">
                         <p>Tax</p>
                         <p>
-                        {" "}
+                          {" "}
                           {calculateTax(cartTotalAmount)
                             .toFixed(0)
-                            .toLocaleString()} MMK
+                            .toLocaleString()}{" "}
+                          MMK
                         </p>
                       </div>
 
@@ -481,7 +486,8 @@ const CheckOutPage = () => {
                         <p>
                           {calculateTotalAmount(
                             values.deliveryType
-                          ).toLocaleString()} MMK
+                          ).toLocaleString()}{" "}
+                          MMK
                         </p>
                       </div>
 

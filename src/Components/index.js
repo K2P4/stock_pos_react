@@ -30,10 +30,11 @@ export { default as RecommendProductComponent } from "./Products/RecommendProduc
 export { default as Table } from "./Table/Table.component";
 export { default as RecommendComponent } from "./Table/Recommend.component";
 export { default as CategoryTable } from "./Table/CategoryTable.component";
+export { default as OrderTableComponent } from "./Table/OrderTable.component";
+export { default as InvoiceTableComponent } from "./Table/InvoiceTable.component";
 
 
 //Order
-export { default as OrderTableComponent } from "./Table/OrderTable.component";
 export { default as OrderFormComponent } from "./FormComponent/OrderForm.component";
 export { default as OrderInfoComponent } from "./ModalBox/OrderInfo.component";
 export { default as OrderInvoiceComponent } from "./Invoice/OrderInvoice.component";

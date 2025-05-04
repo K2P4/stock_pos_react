@@ -4,22 +4,16 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useRegisterMutation } from "../../store/services/endpoints/auth.endpoint";
 import FormDataComponent from "../../Components/FormComponent/FormData.component";
 import { Button } from "../../Components";
 import { AllContext } from "../../context/AllContext";
+import { useRegisterMutation } from "../../store/services/endpoints/auth.endpoint";
 
 const RegisterPage = () => {
   const [registerFun, data] = useRegisterMutation();
   const [errorMessage, setError] = useState("");
 
   const { registerCheck, setRegister } = useContext(AllContext);
-
-  // useEffect(() => {
-  //   if (localStorage.getItem("token")) {
-  //     nav("/dashboard");
-  //   }
-  // }, []);
 
   const nav = useNavigate();
 
@@ -60,10 +54,12 @@ const RegisterPage = () => {
   });
 
   const handleSubmit = async (value) => {
+
+    console.log('valie', value);
     try {
-      const response = await registerFun({ ...value, isAdmin: 1 });
+      const response = await registerFun({...value, isAdmin: 0 });
       if (response?.data.success) {
-        nav("/login");
+        nav("/client/login");
         setRegister(true);
       } else {
         setError(response.data.message || "Login failed");
@@ -71,7 +67,7 @@ const RegisterPage = () => {
       }
     } catch (error) {
       console.log("Caught error", error);
-      setError(error.response?.data?.message);
+      setError(error.response?.data?.message || "Invalid credentials");
     }
   };
 
@@ -93,7 +89,7 @@ const RegisterPage = () => {
             <Form>
               <div className=" border  sm:px-12 sm:py-8 rounded-xl bg-gray-50   sm:w-lg  m-auto  shadow-md">
                 <h1 className="  text-xl font-medium  text-center m-auto mb-5">
-                  Register Your Admin Account
+                  Register Your Client Account
                 </h1>
 
                 <FormDataComponent
@@ -119,6 +115,7 @@ const RegisterPage = () => {
                   label={"Enter Your Email "}
                   placeholder="xpos@gmail.com"
                 />
+
                 <ErrorMessage
                   component={"p"}
                   className=" text-xs text-red-400 mt-0"
@@ -160,7 +157,7 @@ const RegisterPage = () => {
                 <p className=" text-gray-600 sm:text-sm  text-xs mb-2">
                   Already have an account?{" "}
                   <span
-                    onClick={() => nav("/login")}
+                    onClick={() => nav("/client/login")}
                     className=" active:scale-75  select-none underline text-blue-400 "
                   >
                     Login

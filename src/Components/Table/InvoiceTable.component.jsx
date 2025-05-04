@@ -11,21 +11,12 @@ import {
   CircularProgress,
   Dialog,
 } from "@mui/material";
-import NewReleasesIcon from "@mui/icons-material/NewReleases";
-import VerifiedIcon from "@mui/icons-material/Verified";
-import { XIcon } from "lucide-react";
+import DownloadIcon from "@mui/icons-material/Download";
 
 import moment from "moment";
-import DeleteIcon from "@mui/icons-material/Delete";
 
-import Swal from "sweetalert2";
-import {
-  useDeleteOrderMutation,
-  useUpdateOrderMutation,
-} from "../../store/services/endpoints/order.endpoint";
-
-const OrderTableComponent = ({
-  orders,
+const InvoiceTableComponent = ({
+  invoices,
   isError,
   page,
   setPage,
@@ -33,76 +24,18 @@ const OrderTableComponent = ({
   ordersData,
 }) => {
   const [open, setOpen] = useState(false);
-  const [transitionImage, setImage] = useState(null);
   const [success, setSuccess] = useState(false);
-  const [verifyId, setVerifyId] = useState(null);
-  const [updateOrder] = useUpdateOrderMutation();
-  const [deleteOrder] = useDeleteOrderMutation();
 
   const TimeFormatter = (time) => {
     return moment(time).format("DD.MM.YYYY");
   };
 
-  const handleDelete = async (id) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await deleteOrder(id).unwrap();
-          Swal.fire("Deleted!", "Your item has been deleted.", "success");
-        } catch (error) {
-          Swal.fire("Error!", "Something went wrong!", "error");
-        }
-      }
-    });
-  };
+  const calculateTax = (items, delivery) => {
+    const calculateSubTotal = items?.reduce((total, item) => {
+      return total + item.price;
+    }, 0);
 
-  console.log("orders", orders);
-
-  const handleTransition = (id, transitionImage) => {
-    setOpen(true);
-    setImage(transitionImage);
-    setVerifyId(id);
-  };
-
-  const updateStatus = async () => {
-    const formData = {
-      status: 1,
-      payDate: new Date().toISOString().split("T")[0],
-    };
-    const response = await updateOrder({
-      id: verifyId,
-      formData: formData,
-    });
-    setSuccess(true);
-    setOpen(false);
-  };
-
-  const orderStatus = (status) => {
-    let statusText = "";
-    switch (status) {
-      case 1:
-        statusText = "Processing";
-        break;
-      case 2:
-        statusText = "Delivered";
-        break;
-      case 3:
-        statusText = "Cancelled";
-        break;
-      default:
-        statusText = "Pending";
-        break;
-    }
-
-    return statusText;
+    return calculateSubTotal > 200000 ? calculateSubTotal * 0.005 : 0;
   };
 
   useEffect(() => {
@@ -117,30 +50,12 @@ const OrderTableComponent = ({
     return clearTimeout(timer);
   }, [success]);
 
-  const statusClassMap = {
-    0: "bg-orange-400 text-orange-200 hover:bg-orange-500",
-    1: "bg-blue-400 text-blue-200 hover:bg-blue-500",
-    2: "bg-emerald-400 text-emerald-200 hover:bg-emerald-500",
-    3: "bg-red-400 text-red-200 hover:bg-red-500",
-  };
-
-  const getStatusClasses = (status) =>
-    `px-2 py-1 duration-500 rounded-xl  w-[85px]  inline-block  hover:cursor-pointer text-center mx-auto text-xs ${
-      statusClassMap[status] || statusClassMap[3]
-    }`;
-
   const handleClose = () => {
     setOpen(false);
   };
 
   return (
     <div>
-      {success && (
-        <p className="bg-gray-400 text-gray-50 text-sm px-2 py-1 fixed top-8 right-5 mb-1 w-auto shadow-sm rounded-md">
-          Checked Transition successfully!
-        </p>
-      )}
-
       <TableContainer
         component={Paper}
         sx={{
@@ -172,7 +87,7 @@ const OrderTableComponent = ({
                   fontFamily: "Poppins",
                 }}
               >
-                Order No
+                Invoice No
               </TableCell>
               <TableCell
                 sx={{
@@ -203,28 +118,9 @@ const OrderTableComponent = ({
                   fontFamily: "Poppins",
                 }}
               >
-                Email
-              </TableCell>
-              <TableCell
-                sx={{
-                  color: "#363434",
-                  fontWeight: "medium",
-                  cursor: "pointer",
-                  fontFamily: "Poppins",
-                }}
-              >
-                City
-              </TableCell>
-              <TableCell
-                sx={{
-                  color: "#363434",
-                  fontWeight: "medium",
-                  cursor: "pointer",
-                  fontFamily: "Poppins",
-                }}
-              >
                 Status
               </TableCell>
+
               <TableCell
                 sx={{
                   color: "#363434",
@@ -233,7 +129,28 @@ const OrderTableComponent = ({
                   fontFamily: "Poppins",
                 }}
               >
-                Delivery Type
+                Issue Date
+              </TableCell>
+
+              <TableCell
+                sx={{
+                  color: "#363434",
+                  fontWeight: "medium",
+                  cursor: "pointer",
+                  fontFamily: "Poppins",
+                }}
+              >
+                Delivery Fee
+              </TableCell>
+              <TableCell
+                sx={{
+                  color: "#363434",
+                  fontWeight: "medium",
+                  cursor: "pointer",
+                  fontFamily: "Poppins",
+                }}
+              >
+                Tax
               </TableCell>
               <TableCell
                 sx={{
@@ -245,16 +162,7 @@ const OrderTableComponent = ({
               >
                 Total Amount
               </TableCell>
-              <TableCell
-                sx={{
-                  color: "#363434",
-                  fontWeight: "medium",
-                  cursor: "pointer",
-                  fontFamily: "Poppins",
-                }}
-              >
-                Ordered Date
-              </TableCell>
+
               <TableCell
                 sx={{
                   color: "#363434",
@@ -280,76 +188,70 @@ const OrderTableComponent = ({
                   Error : {isError}
                 </TableCell>
               </TableRow>
-            ) : orders?.length > 0 ? (
-              orders?.map((order, index) => (
+            ) : invoices?.length > 0 ? (
+              invoices?.map((invoice, index) => (
                 <TableRow
                   sx={{ height: "40px" }}
                   className="bg-gray-50"
-                  key={order._id}
+                  key={invoice._id}
                 >
                   <TableCell sx={{ fontFamily: "Poppins" }}>
                     {index + 1}
                   </TableCell>
                   <TableCell className="   " sx={{ fontFamily: "Poppins" }}>
                     <a
-                      href={`/admin/order/${order._id}`}
+                      href={`/admin/invoice/${invoice._id}`}
                       className="text-blue-500 underline"
                     >
-                      {order?.orderNumber}
+                      {invoice?.invoiceNumber}
                     </a>
                   </TableCell>
                   <TableCell sx={{ fontFamily: "Poppins" }}>
-                    {order.name}
+                    {invoice.name}
                   </TableCell>
                   <TableCell sx={{ fontFamily: "Poppins" }}>
-                    {order.email}
+                    {invoice.email}
                   </TableCell>
 
                   <TableCell sx={{ fontFamily: "Poppins" }}>
-                    {order.phone}
+                    {invoice?.payDate !== null ? (
+                      <span
+                        className={`px-2 py-1 duration-500 rounded-xl  w-[85px]  inline-block  hover:cursor-pointer text-center mx-auto text-xs bg-emerald-400 text-emerald-200 hover:bg-emerald-500`}
+                      >
+                        Paid
+                      </span>
+                    ) : (
+                      <span
+                        className={`px-2 py-1 duration-500 rounded-xl  w-[85px]  inline-block  hover:cursor-pointer text-center mx-auto text-xs bg-orange-400 text-orange-200 hover:bg-orange-500`}
+                      >
+                        UnPaid
+                      </span>
+                    )}
                   </TableCell>
-                  <TableCell sx={{ fontFamily: "Poppins" }}>
-                    {order.city}
-                  </TableCell>
-                  <TableCell sx={{ fontFamily: "Poppins" }}>
-                    <span className={getStatusClasses(order.status)}>
-                      {orderStatus(order.status)}
-                    </span>
-                  </TableCell>
-                  <TableCell sx={{ fontFamily: "Poppins" }}>
-                    {order.deliveryType == 0 ? "Standard" : "Express"}
-                  </TableCell>
-                  <TableCell sx={{ fontFamily: "Poppins" }}>
-                    <span className="font-medium ">
-                      MMK {order.totalAmount.toLocaleString()}
-                    </span>
-                  </TableCell>
+
                   <TableCell
                     sx={{ fontFamily: "Poppins", textTransform: "capitalize" }}
                   >
-                    {TimeFormatter(order.createdAt)}
+                    {TimeFormatter(invoice?.payDate)}
                   </TableCell>
                   <TableCell sx={{ fontFamily: "Poppins" }}>
-                    {order.status == 0 ? (
-                      <IconButton
-                        onClick={() =>
-                          handleTransition(order._id, order.transitionRecord)
-                        }
-                        color="warning"
-                      >
-                        <NewReleasesIcon />
-                      </IconButton>
-                    ) : (
-                      <IconButton color="success">
-                        <VerifiedIcon />
-                      </IconButton>
-                    )}
+                    {invoice?.deliveryType == 0 ? 3000 : 5000}
+                  </TableCell>
+                  <TableCell sx={{ fontFamily: "Poppins" }}>
+                    {calculateTax(
+                      invoice?.items,
+                      invoice?.deliveryType
+                    ).toLocaleString()}
+                  </TableCell>
+                  <TableCell sx={{ fontFamily: "Poppins" }}>
+                    <span className="font-medium ">
+                      MMK {invoice.totalAmount.toLocaleString()}
+                    </span>
+                  </TableCell>
 
-                    <IconButton
-                      onClick={() => handleDelete(order?._id)}
-                      color="gray"
-                    >
-                      <DeleteIcon />
+                  <TableCell sx={{ fontFamily: "Poppins" }}>
+                    <IconButton color="primary">
+                      <DownloadIcon />
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -365,51 +267,13 @@ const OrderTableComponent = ({
                     padding: "40px",
                   }}
                 >
-                  Not Found Customer Order
+                  Not Found Customer Invoice
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </TableContainer>
-
-      {/* verify record form */}
-      <Dialog
-        className="rounded-xl mx-auto  bg-transparent  shadow-sm"
-        fullWidth
-        maxWidth="md"
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="responsive-dialog-title"
-        sx={{
-          "& .MuiDialog-paper": { minHeight: "500px", maxHeight: "100vh" },
-        }}
-      >
-        <div className=" p-5">
-          <div className="flex items-center justify-between mb-1">
-            <button
-              onClick={updateStatus}
-              className=" hover:cursor-pointer w-auto text-center rounded-md border border-transparent bg-blue-600 duration-500 transition-all px-4 py-2 text-base font-medium text-white shadow-xs hover:bg-blue-700"
-            >
-              Verify Transition
-            </button>
-
-            <button
-              onClick={handleClose}
-              type="button"
-              className="font-medium text-gray-400 active:scale-95 cursor-pointer hover:text-gray-500 duration-500 transition-all "
-            >
-              <XIcon />
-            </button>
-          </div>
-
-          <img
-            src={transitionImage}
-            alt="test"
-            className=" mx-auto object-cover"
-          />
-        </div>
-      </Dialog>
 
       {/* pagination group */}
       {!isLoading && (
@@ -433,14 +297,18 @@ const OrderTableComponent = ({
               Next
             </button>
           </div>
-
-          <button className=" bg-gray-50 flex items-center gap-1 text-md   px-3 py-2  rounded-lg shadow-md text-gray-500 ">
-            Total : {ordersData?.total}
-          </button>
+          <div className="flex items-center gap-2">
+            <button className=" bg-gray-50 flex items-center gap-1 text-md   px-3 py-2  rounded-lg shadow-md text-gray-500 ">
+              Total Amount : <span className="font-medium ">{ordersData?.allTotalAmount.toLocaleString()} MMK</span>
+            </button>
+            <button className=" bg-gray-50 flex items-center gap-1 text-md   px-3 py-2  rounded-lg shadow-md text-gray-500 ">
+              Total  : {ordersData?.total}
+            </button>
+          </div>
         </div>
       )}
     </div>
   );
 };
 
-export default OrderTableComponent;
+export default InvoiceTableComponent;

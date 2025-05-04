@@ -4,10 +4,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import { useLogInMutation } from "../../store/services/endpoints/auth.endpoint";
 import { Button } from "../../Components";
 import { AllContext } from "../../context/AllContext";
 import FormDataComponent from "../../Components/FormComponent/FormData.component";
+import { useLogInMutation } from "../../store/services/endpoints/auth.endpoint";
 
 const LoginPage = () => {
   const [loginFun, data] = useLogInMutation();
@@ -53,12 +53,12 @@ const LoginPage = () => {
 
   const handleSubmit = async (value) => {
     try {
-      const response = await loginFun({ ...value, isAdmin: 1 });
-
+      const response = await loginFun({ ...value, isAdmin: 0 });
+      console.log("response", response);
       if (response.data.success) {
         localStorage.setItem("token", response.data.token);
 
-        nav("/admin/dashboard");
+        nav("/home");
 
         setLogin(true);
       } else {
@@ -89,7 +89,6 @@ const LoginPage = () => {
           src="/logo-xpos.png"
           className="size-full w-32 mx-auto h-24 object-cover"
         />
-
         <Formik
           validateOnChange={false}
           validateOnBlur={false}
@@ -101,7 +100,7 @@ const LoginPage = () => {
             <Form>
               <div className=" border  sm:px-12 sm:py-8 rounded-xl bg-gray-50   sm:w-lg  m-auto  shadow-md">
                 <h1 className="  text-xl font-medium  text-center m-auto mb-5">
-                  Login Your Admin Account
+                  Login Your Client Account
                 </h1>
 
                 <FormDataComponent
@@ -132,6 +131,16 @@ const LoginPage = () => {
                   <p className=" text-xs text-red-400 mt-0">{errorMessage}</p>
                 )}
 
+                <p className=" text-gray-600 sm:text-sm  text-xs mb-2">
+                  Have you registered account?{" "}
+                  <span
+                    onClick={() => nav("/client/register")}
+                    className=" active:scale-75  select-none underline text-blue-400 "
+                  >
+                    Register
+                  </span>
+                </p>
+
                 <Button
                   disabled={isSubmitting}
                   type={"submit"}
@@ -140,10 +149,10 @@ const LoginPage = () => {
                 />
 
                 <p
-                  onClick={() => nav("/client/login")}
+                  onClick={() => nav("/login")}
                   className=" select-none underline  text-left mt-2 text-blue-400 sm:text-sm  text-xs mb-2"
                 >
-                  Log in as Client?{" "}
+                  Log in as Admin?{" "}
                 </p>
               </div>
             </Form>

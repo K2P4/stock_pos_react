@@ -5,6 +5,8 @@ import {
   CartPage,
   CategoryPage,
   CheckOutPage,
+  ClientLoginPage,
+  ClientRegisterPage,
   DashboardPage,
   HomePage,
   InvoicesPage,
@@ -20,42 +22,38 @@ import {
   StockPage,
 } from "./pages";
 import MainLayout from "./MainLayout";
-import RouteGuardComponent from "./Guard/RouteGuard.component";
-import PublicGuardComponent from "./Guard/PublicGuard.component";
 import { ProductDetailComponent } from "./Components";
+import AdminRouteGuardComponent from "./Guard/AdminRouteGuard.component";
+import ClientRouteGuardComponent from "./Guard/ClientRouteGuard.component";
+import PublicGuardComponent from "./Guard/PublicGuard.component";
 
 const App = () => {
   return (
     <div>
       <Routes>
-        <Route element={<RouteGuardComponent />}>
-          {/* Admin Routes (Only for Admin Users) */}
+        {/* Admin */}
+        <Route element={<AdminRouteGuardComponent />}>
           <Route path="/admin" element={<MainLayout />}>
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="invoices" element={<InvoicesPage />} />
             <Route path="category" element={<CategoryPage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="stock" element={<StockPage />} />
-
-            {/* Order  */}
-            <Route path="order/history" element={<OrderHistoryPage />} />
-            <Route path="order/:id" element={<OrderDetailPage />} />
-
-            {/* Stock  */}
             <Route path="stock/:id" element={<StockDetailPage />} />
             <Route path="stock/cart" element={<CartPage />} />
+            <Route path="order/history" element={<OrderHistoryPage />} />
+            <Route path="order/:id" element={<OrderDetailPage />} />
+            <Route path="invoices" element={<InvoicesPage />} />
           </Route>
+        </Route>
 
-          {/* POS User Routes (Only for Normal Users) */}
+        {/* Client */}
+        <Route element={<ClientRouteGuardComponent />}>
           <Route path="/" element={<MainLayout />}>
             <Route path="home" element={<HomePage />} />
             <Route path="invoices" element={<AddToCartPage />} />
-
-            {/* Order  */}
             <Route path="order/history" element={<OrderShopHistoryPage />} />
             <Route path="order/current" element={<OrderCurrentPage />} />
-
-            {/* Stock */}
             <Route path="stock" element={<ProductPage />} />
             <Route path="stock/:id" element={<ProductDetailComponent />} />
             <Route path="stock/cart" element={<AddToCartPage />} />
@@ -63,9 +61,12 @@ const App = () => {
           </Route>
         </Route>
 
+        {/* Auth */}
         <Route element={<PublicGuardComponent />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/client/login" element={<ClientLoginPage />} />
+          <Route path="/client/register" element={<ClientRegisterPage />} />
         </Route>
       </Routes>
     </div>
